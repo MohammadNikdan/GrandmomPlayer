@@ -22,7 +22,9 @@
             android:name=".PlayerActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:screenOrientation="landscape" /> <service
+            android:screenOrientation="landscape" />
+
+        <service
             android:name=".PlayerService"
             android:enabled="true"
             android:exported="false" />
