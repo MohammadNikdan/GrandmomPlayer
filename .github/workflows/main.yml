@@ -16,15 +16,13 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: 'gradle'
+        # The 'cache: gradle' line has been removed from here
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    # --- مرحله جدید برای عیب‌یابی ---
     - name: Display content of app build gradle
       run: cat app/build.gradle.kts
-    # --------------------------------
 
     - name: Build with Gradle
       run: ./gradlew assembleDebug
