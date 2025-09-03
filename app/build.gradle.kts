@@ -27,6 +27,5 @@ android {
 
 dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
-    // --- این خط جدید اضافه شده است ---
     implementation("com.google.android.material:material:1.11.0")
 }
