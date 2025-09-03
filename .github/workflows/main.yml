@@ -21,6 +21,11 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
+    # --- مرحله جدید برای عیب‌یابی ---
+    - name: Display content of app build gradle
+      run: cat app/build.gradle.kts
+    # --------------------------------
+
     - name: Build with Gradle
       run: ./gradlew assembleDebug
 
