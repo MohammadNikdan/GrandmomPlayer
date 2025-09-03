@@ -1,7 +1,7 @@
+import android.content.Intent; // <--- ایمپورت مهم اضافه شد
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.VideoView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,7 +15,6 @@ public class PlayerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // تنظیمات تمام صفحه کردن
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_player);
@@ -26,45 +25,37 @@ public class PlayerActivity extends AppCompatActivity {
         if (videoPath != null) {
             Uri videoUri = Uri.parse(videoPath);
             videoView.setVideoURI(videoUri);
-            // حذف کنترل‌های پیش‌فرض
             videoView.setMediaController(null);
 
-            videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    // ویدئو تا انتها پخش شد
-                    updateLastEpisodeFile();
-                    PlayerService.isVideoPlaying = false;
-                    finish(); // این اکتیویتی را ببند
-                    // سرویس را دوباره صدا بزن تا ویدئوی بعدی را پخش کند
-                    startService(new Intent(PlayerActivity.this, PlayerService.class));
-                }
+            videoView.setOnCompletionListener(mp -> {
+                updateLastEpisodeFile();
+                PlayerService.isVideoPlaying = false;
+                startService(new Intent(PlayerActivity.this, PlayerService.class));
+                finish();
             });
 
-            videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-                @Override
-                public boolean onError(MediaPlayer mp, int what, int extra) {
-                    // اگر در پخش خطایی رخ داد
-                    PlayerService.isVideoPlaying = false;
-                    finish(); // اکتیویتی را ببند
-                    return true;
-                }
+            videoView.setOnErrorListener((mp, what, extra) -> {
+                PlayerService.isVideoPlaying = false;
+                finish();
+                return true;
             });
-
 
             videoView.start();
         }
     }
 
     private void updateLastEpisodeFile() {
+        if (videoPath == null) return;
         File videoFile = new File(videoPath);
-        String fileName = videoFile.getName(); // مثلا "1.mp4"
+        String fileName = videoFile.getName();
         String episodeNumberStr = fileName.substring(0, fileName.lastIndexOf('.'));
         try {
             int episodeNumber = Integer.parseInt(episodeNumberStr);
             File usbDrive = videoFile.getParentFile();
-            File textFile = new File(usbDrive, "lastepisode.txt");
-            FileHelper.writeLastEpisode(textFile, episodeNumber);
+            if (usbDrive != null) {
+                File textFile = new File(usbDrive, "lastepisode.txt");
+                FileHelper.writeLastEpisode(textFile, episodeNumber);
+            }
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
@@ -73,9 +64,7 @@ public class PlayerActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        // اگر کاربر یا سیستم برنامه را متوقف کرد (مثلا دستگاه خاموش شد)
-        // اطمینان حاصل کن که isVideoPlaying false شود تا پخش بعدی ممکن باشد
-        if(videoView.isPlaying()){
+        if (isFinishing()) {
             PlayerService.isVideoPlaying = false;
         }
     }
