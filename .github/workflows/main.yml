@@ -1,0 +1,33 @@
+```yaml
+name: ساخت اپلیکیشن اندروید
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: دریافت کدها
+      uses: actions/checkout@v3
+
+    - name: تنظیم JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: 'gradle'
+
+    - name: دادن دسترسی اجرا به gradlew
+      run: chmod +x gradlew
+
+    - name: ساخت پروژه با Gradle
+      run: ./gradlew assembleDebug
+
+    - name: آپلود APK به عنوان خروجی
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-debug
+        path: app/build/outputs/apk/debug/app-debug.apk
+```
