@@ -11,21 +11,18 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="Grandmom Player"
+        android:label="AutoVideoPlayer"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:requestLegacyExternalStorage="true"
-        android:theme="@style/Theme.AppCompat.NoActionBar"
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
         tools:targetApi="31">
 
         <activity
             android:name=".PlayerActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:screenOrientation="landscape"
-            android:theme="@style/Theme.AppCompat.NoActionBar.Fullscreen" />
-
-        <service
+            android:screenOrientation="landscape" /> <service
             android:name=".PlayerService"
             android:enabled="true"
             android:exported="false" />
@@ -40,6 +37,5 @@
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
-
     </application>
 </manifest>
